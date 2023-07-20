@@ -14,13 +14,7 @@ import org.json.JSONArray;
  * @author BD_ALUMNOS
  */
 public class inicio extends javax.swing.JFrame {
-    String admin="admin";
     String red="";
-    String claveadmin="admin";
-    String inventario="inventario";
-    String claveinventario="inventario";
-    String ventas="ventas";
-    String claveventas="ventas";
     
     public inicio() {
         initComponents();

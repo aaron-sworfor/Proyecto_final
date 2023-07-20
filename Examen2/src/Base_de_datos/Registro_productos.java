@@ -120,7 +120,7 @@ public class Registro_productos extends javax.swing.JFrame {
         getContentPane().add(tfprecio, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 220, 200, 30));
 
         jButton1.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
-        jButton1.setText("Modificar ");
+        jButton1.setText("insertar");
         jButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton1ActionPerformed(evt);
@@ -180,7 +180,34 @@ public class Registro_productos extends javax.swing.JFrame {
     }//GEN-LAST:event_tfprecioActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
+        if(jButton1.getText().equals("insertar")&&
+                tfid.getText()!="" &&
+                tfmarca.getText()!="" &&
+                tfnombre.getText()!="" &&
+                tfpresentacion.getText()!=""&&
+                tfprecio.getText()!=""){
+            
+            
+            try {
+        URL url = new URL("http://localhost/appi/insertar_producto.php?id="+tfid.getText()+"&nombre="+tfnombre.getText()+"&marca="+tfmarca.getText()+"&descripcion="+tfpresentacion.getText()+"&precio="+tfprecio.getText());
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("GET");
+            int responseCode = conn.getResponseCode();
+            
+            if (responseCode == HttpURLConnection.HTTP_OK) {
+                BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+                String inputLine;
+                StringBuilder response = new StringBuilder();
+                
+                while ((inputLine = reader.readLine()) != null) {
+                    response.append(inputLine);
+                }
+                reader.close();
+            }
+            }catch(Exception e){}
+            
+        }
+        
     }//GEN-LAST:event_jButton1ActionPerformed
     public void get(){
         try {
