@@ -186,25 +186,11 @@ public class Registro_productos extends javax.swing.JFrame {
                 tfnombre.getText()!="" &&
                 tfpresentacion.getText()!=""&&
                 tfprecio.getText()!=""){
+            String id=tfid.getText();
             
             
-            try {
-        URL url = new URL("http://localhost/appi/insertar_producto.php?id="+tfid.getText()+"&nombre="+tfnombre.getText()+"&marca="+tfmarca.getText()+"&descripcion="+tfpresentacion.getText()+"&precio="+tfprecio.getText());
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestMethod("GET");
-            int responseCode = conn.getResponseCode();
-            
-            if (responseCode == HttpURLConnection.HTTP_OK) {
-                BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-                String inputLine;
-                StringBuilder response = new StringBuilder();
-                
-                while ((inputLine = reader.readLine()) != null) {
-                    response.append(inputLine);
-                }
-                reader.close();
-            }
-            }catch(Exception e){}
+            metodos ne=new metodos();
+            String red=ne.metoos("http://localhost/appi/insertar_producto.php?id="+tfid.getText()+"&nombre="+tfnombre.getText()+"&marca="+tfmarca.getText()+"&descripcion="+tfpresentacion.getText()+"&precio="+tfprecio.getText());
             
         }
         

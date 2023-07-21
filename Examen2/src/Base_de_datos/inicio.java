@@ -99,26 +99,11 @@ public class inicio extends javax.swing.JFrame {
 
     private void jLabel5MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jLabel5MouseClicked
         menu entrar = new menu();
+        metodos conn= new metodos();
         String usuario = tfnombre.getText().toString();
         String clave = tfcontrasena.getText().toString();
-        try {
-            String appi = "http://localhost/appi/usuarios.php?usuario="+usuario+"&clave="+clave+"";
-            URL url = new URL(appi);
-            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod("GET");
-            int responseCode = connection.getResponseCode();
-    if (responseCode == HttpURLConnection.HTTP_OK) {
-        BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
-        StringBuilder response = new StringBuilder();
-        String line;
-        
-        while ((line = reader.readLine()) != null) {
-            response.append(line);
-        }
-        
-        reader.close();
-        red=response.toString();
-    }
+        try {    
+    red=conn.metoos("http://localhost/appi/usuarios.php?usuario="+usuario+"&clave="+clave+"");
             if (red != null) {
             // El API respondió correctamente, ahora se puede realizar la comparación de datos
             // Aquí se puede procesar la respuesta JSON y comparar los datos con los campos de texto
@@ -132,7 +117,7 @@ public class inicio extends javax.swing.JFrame {
                this.setVisible(false);
             } else {
                 // Si el array está vacío, no existe el usuario y clave
-                System.out.println("nop");
+                JOptionPane.showMessageDialog(this, "El Usuario o la clave son incorrectos");
             }
         } else {
             // Error al realizar la solicitud al API
