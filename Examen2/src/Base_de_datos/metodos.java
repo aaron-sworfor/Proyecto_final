@@ -5,11 +5,12 @@
 package Base_de_datos;
 import javax.swing.*;
 import java.io.*;
+import java.awt.*;
 import java.net.*;
-import org.json.JSONArray;
+import org.json.*;
 public class metodos {
-    public String metoos(String x) throws MalformedURLException, IOException{
-        String apiUrl = x;
+    public String gett(String x) throws MalformedURLException, IOException{
+    String apiUrl = x;
     URL url = new URL(apiUrl);
     HttpURLConnection connection = (HttpURLConnection) url.openConnection();
     connection.setRequestMethod("GET");
@@ -30,5 +31,26 @@ public class metodos {
     
     return null;
         
+    }
+    public void insertar (String x,String y){
+         try {
+            String url = x; 
+            String postData = y;
+            URL apiURL = new URL(url);
+            HttpURLConnection connection = (HttpURLConnection) apiURL.openConnection();
+            connection.setRequestMethod("POST");
+            connection.setDoOutput(true);
+            connection.setDoInput(true);
+             try (OutputStream outputStream = connection.getOutputStream()) {
+                byte[] input = postData.getBytes("utf-8");
+                outputStream.write(input, 0, input.length);
+            }
+             int responseCode = connection.getResponseCode();
+
+            // Close the connection
+            connection.disconnect();
+            } catch(Exception g)
+            {
+            }
     }
 }

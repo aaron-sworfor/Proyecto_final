@@ -1,6 +1,6 @@
 <?php
 
-include 'conexion_examen.php';
+include 'conexion_examen .php';		
 
 $pdo=new Conexion();
 

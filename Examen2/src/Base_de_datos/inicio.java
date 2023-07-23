@@ -103,25 +103,19 @@ public class inicio extends javax.swing.JFrame {
         String usuario = tfnombre.getText().toString();
         String clave = tfcontrasena.getText().toString();
         try {    
-    red=conn.metoos("http://localhost/appi/usuarios.php?usuario="+usuario+"&clave="+clave+"");
+    red=conn.gett("http://localhost/appi/usuarios.php?usuario="+usuario+"&clave="+clave+"");
             if (red != null) {
-            // El API respondió correctamente, ahora se puede realizar la comparación de datos
-            // Aquí se puede procesar la respuesta JSON y comparar los datos con los campos de texto
-            // Supongamos que la respuesta JSON contiene un array de objetos JSON
                 JSONArray j= new JSONArray(red);
             
             if (j.length() > 0) {
-                // Si el array contiene al menos un objeto, se considera que existe el usuario y clave
-                entrar.seleccion(tfnombre.getText());
+              entrar.seleccion(tfnombre.getText());
                 entrar.setVisible(true);
                this.setVisible(false);
             } else {
-                // Si el array está vacío, no existe el usuario y clave
                 JOptionPane.showMessageDialog(this, "El Usuario o la clave son incorrectos");
             }
         } else {
-            // Error al realizar la solicitud al API
-            System.out.println("nopi");
+            JOptionPane.showMessageDialog(this, "Error al conectar la base de datos revise la conexion en xammp ");
         }
             
         } catch (IOException e) {

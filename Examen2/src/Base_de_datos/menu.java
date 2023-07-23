@@ -230,54 +230,63 @@ public class menu extends javax.swing.JFrame {
         
             Registro_productos entrar = new Registro_productos();
         entrar.setVisible(true);
+        entrar.seleccion("insertar");
             this.setVisible(false);
     }//GEN-LAST:event_jMenu3MouseClicked
 
     private void jMenu4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenu4MouseClicked
         Productos_inventario entrar = new Productos_inventario();
         entrar.setVisible(true);
+        entrar.seleccion("insertar");
             this.setVisible(false);
     }//GEN-LAST:event_jMenu4MouseClicked
 
     private void jMenu5MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenu5MouseClicked
         Actualizacion_inventario entrar = new Actualizacion_inventario();
         entrar.setVisible(true);
+        entrar.seleccion("insertar");
             this.setVisible(false);
     }//GEN-LAST:event_jMenu5MouseClicked
 
     private void jMenu18MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenu18MouseClicked
         Ventas_productos entrar = new Ventas_productos();
         entrar.setVisible(true);
+        entrar.seleccion("insertar");
             this.setVisible(false);
     }//GEN-LAST:event_jMenu18MouseClicked
 
     private void jMenu6MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenu6MouseClicked
         Registro_productos entrar = new Registro_productos();
         entrar.setVisible(true);
+        entrar.seleccion("eliminar");
             this.setVisible(false);
     }//GEN-LAST:event_jMenu6MouseClicked
 
     private void jMenu7MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenu7MouseClicked
         Productos_inventario entrar = new Productos_inventario();
         entrar.setVisible(true);
+        entrar.seleccion("eliminar");
             this.setVisible(false);
     }//GEN-LAST:event_jMenu7MouseClicked
 
     private void jMenu8MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenu8MouseClicked
         Actualizacion_inventario entrar = new Actualizacion_inventario();
         entrar.setVisible(true);
+        entrar.seleccion("eliminar");
             this.setVisible(false);
     }//GEN-LAST:event_jMenu8MouseClicked
 
     private void jMenu19MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenu19MouseClicked
         Ventas_productos entrar = new Ventas_productos();
         entrar.setVisible(true);
+        entrar.seleccion("eliminar");
             this.setVisible(false);
     }//GEN-LAST:event_jMenu19MouseClicked
 
     private void jMenu10MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenu10MouseClicked
        Registro_productos entrar = new Registro_productos();
         entrar.setVisible(true);
+        entrar.seleccion("actualizar");
             this.setVisible(false);
     }//GEN-LAST:event_jMenu10MouseClicked
 
@@ -285,24 +294,28 @@ public class menu extends javax.swing.JFrame {
         
         Productos_inventario entrar = new Productos_inventario();
         entrar.setVisible(true);
+        entrar.seleccion("actualizar");
             this.setVisible(false);
     }//GEN-LAST:event_jMenu11MouseClicked
 
     private void jMenu12MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenu12MouseClicked
         Actualizacion_inventario entrar = new Actualizacion_inventario();
         entrar.setVisible(true);
+        entrar.seleccion("actualizar");
             this.setVisible(false);
     }//GEN-LAST:event_jMenu12MouseClicked
 
     private void jMenu20MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenu20MouseClicked
         Ventas_productos entrar = new Ventas_productos();
         entrar.setVisible(true);
+        entrar.seleccion("actualizar");
             this.setVisible(false);
     }//GEN-LAST:event_jMenu20MouseClicked
 
     private void jMenu14MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenu14MouseClicked
         Registro_productos entrar = new Registro_productos();
         entrar.setVisible(true);
+        entrar.seleccion("buscar");
             this.setVisible(false);
     }//GEN-LAST:event_jMenu14MouseClicked
 
@@ -310,18 +323,21 @@ public class menu extends javax.swing.JFrame {
         
         Productos_inventario entrar = new Productos_inventario();
         entrar.setVisible(true);
+        entrar.seleccion("buscar");
             this.setVisible(false);
     }//GEN-LAST:event_jMenu15MouseClicked
 
     private void jMenu16MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenu16MouseClicked
         Actualizacion_inventario entrar = new Actualizacion_inventario();
         entrar.setVisible(true);
+        entrar.seleccion("buscar");
             this.setVisible(false);
     }//GEN-LAST:event_jMenu16MouseClicked
 
     private void jMenu21MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenu21MouseClicked
         Ventas_productos entrar = new Ventas_productos();
         entrar.setVisible(true);
+        entrar.seleccion("buscar");
             this.setVisible(false);
     }//GEN-LAST:event_jMenu21MouseClicked
    
