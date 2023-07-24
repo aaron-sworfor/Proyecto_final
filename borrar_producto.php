@@ -15,6 +15,6 @@ if ($_SERVER['REQUEST_METHOD']=='DELETE'){
 	$stmt->execute();
 	header("HTTP/1.1 200 OK");
 	exit;
-	}
-	header("HTTP/1.1 400 Bad REQUEST_METHOD");
+	}else {
+	header("HTTP/1.1 400 Bad REQUEST_METHOD");}
 ?>

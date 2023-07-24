@@ -8,9 +8,14 @@ import javax.swing.*;
 import java.io.*;
 import java.awt.*;
 import java.net.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.json.*;
 import javax.swing.table.DefaultTableModel;
 public class Ventas_productos extends javax.swing.JFrame {
+    int no=0;
+    String op="";
+    int cantidad=0;
    DefaultTableModel model;
     public Ventas_productos() {
         initComponents();
@@ -22,11 +27,28 @@ public class Ventas_productos extends javax.swing.JFrame {
         model.addColumn("precio");
         model.addColumn("nombre_producto");
         this.jTable1.setModel(model);
-        get();
+        get("http://localhost/appi/get_ventas_productos.php");
     }
 
     public void seleccion (String x){
-        jButton1.setText(x);
+        bmodificacion.setText(x);
+        tfidventa.setText("");
+        tfidprod.setText("0");
+        tffecha.setText("DD/MM/AAAA");
+        tfnombrepro.setText("");
+        tfcanpro.setText("0");
+        tfprecio.setText("0");
+        if (x=="insertar"){
+        bmodificacion.setEnabled(false);}else{
+        bbuscar.setEnabled(false);
+                                bmodificacion.setEnabled(true);
+            tfidprod.setEnabled(false);}
+        
+            tfcanpro.setEnabled(false);
+            tfnombrepro.setEnabled(false);
+            tffecha.setEnabled(false);
+            tfprecio.setEnabled(false);
+        
     }
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -43,11 +65,12 @@ public class Ventas_productos extends javax.swing.JFrame {
         tfcanpro = new javax.swing.JTextField();
         jLabel6 = new javax.swing.JLabel();
         tfnombrepro = new javax.swing.JTextField();
-        jButton1 = new javax.swing.JButton();
+        bmodificacion = new javax.swing.JButton();
         tfprecio = new javax.swing.JTextField();
         jLabel7 = new javax.swing.JLabel();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
+        bbuscar = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -118,14 +141,14 @@ public class Ventas_productos extends javax.swing.JFrame {
         });
         getContentPane().add(tfnombrepro, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 260, 200, 30));
 
-        jButton1.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
-        jButton1.setText("Modificar ");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        bmodificacion.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
+        bmodificacion.setText("Modificar ");
+        bmodificacion.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                bmodificacionActionPerformed(evt);
             }
         });
-        getContentPane().add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(490, 10, 100, 30));
+        getContentPane().add(bmodificacion, new org.netbeans.lib.awtextra.AbsoluteConstraints(480, 140, 100, 30));
 
         tfprecio.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -152,6 +175,15 @@ public class Ventas_productos extends javax.swing.JFrame {
         jScrollPane1.setViewportView(jTable1);
 
         getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 300, 620, 260));
+
+        bbuscar.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
+        bbuscar.setText("Buscar_producto ");
+        bbuscar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bbuscarActionPerformed(evt);
+            }
+        });
+        getContentPane().add(bbuscar, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 30, 150, 30));
 
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/fondo inicio.png"))); // NOI18N
         getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 620, 390));
@@ -185,17 +217,157 @@ public class Ventas_productos extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_tfnombreproActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton1ActionPerformed
+    private void bmodificacionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bmodificacionActionPerformed
+        metodos ne=new metodos();
+        try {
+                    int id1=Integer.parseInt(tfidprod.getText());
+                    int idven=Integer.parseInt(tfidventa.getText());
+                    String nombre1=tfnombrepro.getText();
+                    String fech=tffecha.getText();
+                    op=bmodificacion.getText();
+                    int cantidad1=Integer.parseInt(tfcanpro.getText());
+                    int precio1=Integer.parseInt(tfprecio.getText());
+                    switch(op){
+                        case "insertar":
+                                if(tfidventa.getText()!="" && tffecha.getText()!="" && tfcanpro.getText() !="" && cantidad > cantidad1){
+                                String re =ne.gett("http://localhost/appi/get_ventas_productos.php?id_venta="+idven);
+                                JSONArray j= new JSONArray(re);
+                                 if (j.length() > 0) {
+                                     JOptionPane.showMessageDialog(this, "El producto tiene una ID duplicada a un producto existente");
+                                 
+                                 }else{
+                                     ne.insertar("http://localhost/appi/insertar_venta.php", "id_venta="+idven+"&id_producto="+id1+"&fecha_venta="+fech+"&cantidad_productos="+cantidad1+"&precio="+precio1+"&nombre_producto="+nombre1);
+                                     ne.insertar("http://localhost/appi/insertar_venta_actualizacion.php", "numfactura="+idven+"&id="+id1+"&fechcompra="+fech+"&cantidad="+cantidad1);
+                                     ne.actualizar("http://localhost/appi/descantar_producto_inventario.php?id"+id1+"&cantidad="+cantidad1);
+                                get("http://localhost/appi/get_ventas_productos.php");
+                                int total =cantidad1*precio1;
+                                JOptionPane.showMessageDialog(this, "La venta se concreto correctamente"
+                                                                              + "\n-----------------------------------------\n"
+                                                                              + "|id de venta            |"+idven
+                                                                              + "\n-----------------------------------------\n"
+                                                                              + "|id de producto         |"+id1
+                                                                              + "\n-----------------------------------------\n"
+                                                                              + "|fecha de la venta      |"+fech
+                                                                              + "\n-----------------------------------------\n"
+                                                                              + "|nombre del producto    |"+nombre1
+                                                                              + "\n-----------------------------------------\n"
+                                                                              + "|cantidad del producto  |"+cantidad1
+                                                                              + "\n-----------------------------------------\n"
+                                                                              + "|precio del producto    |"+precio1
+                                                                              + "\n-----------------------------------------\n"
+                                                                              + "|total del producto     |"+total
+                                                                              + "\n-----------------------------------------\n");
+                                
+                                 
+                                 }
+                                    seleccion(bmodificacion.getText());
+                                }else if (cantidad < cantidad1){
+                                    JOptionPane.showMessageDialog(this, "La cantidad que se quiere comprar es mayor que la del almacen,porfavor de camiar la cantidad");
+                                } 
+                            break;
+                        case "eliminar":
+                                
+                                String re =ne.gett("http://localhost/appi/get_ventas_productos.php?id_venta="+idven);
+                                JSONArray j= new JSONArray(re);
+                                 if (j.length() > 0) {
+                                   ne.borrar("http://localhost/appi/borrar_venta.php?id_venta="+idven);
+                                   get("http://localhost/appi/get_ventas_productos.php");
+                                   seleccion(bmodificacion.getText());
+                                   JOptionPane.showMessageDialog(this, "El producto se elimino correctamente");
+                                 
+                                 }else{
+                                        JOptionPane.showMessageDialog(this, "El producto no existe");
+                                 }
+                      break;
+                        case "actualizar":
+                                 re =ne.gett("http://localhost/appi/get_ventas_productos.php?id_venta="+idven);
+                                JSONArray j2= new JSONArray(re);
+                                 if (j2.length() > 0 ) {
+                                    tfcanpro.setEnabled(true);
+                                    tfnombrepro.setEnabled(true);
+                                    tffecha.setEnabled(true);
+                                    tfprecio.setEnabled(true);
+                                    tfidprod.setEnabled(true);
+                                     get("http://localhost/appi/get_ventas_productos.php?id_venta="+idven);
+                                     if(no==1){
+                                     ne.actualizar("http://localhost/appi/actualizar_venta.php?id_venta="+idven+"&id_producto="+id1+"&fecha_venta="+fech+"&cantidad_productos="+cantidad1+"&precio="+precio1+"&nombre_producto="+nombre1);
+                                   get("http://localhost/appi/get_ventas_productos.php");
+                                   seleccion(bmodificacion.getText());
+                                    no=0;
+                                     JOptionPane.showMessageDialog(this, "El producto se actualizo");}
+                                      no=1;
+                                 }else{
+                                        JOptionPane.showMessageDialog(this, "El producto no existe");
+                                 }
+                      break;
+                        case "buscar":
+                                 re =ne.gett("http://localhost/appi/get_ventas_productos.php?id_venta="+idven);
+                                JSONArray jg= new JSONArray(re);
+                                 if (jg.length() > 0) {
+                                   get("http://localhost/appi/get_ventas_productos.php?id_venta="+idven);
+                                     seleccion(bmodificacion.getText());
+                                 }else{
+                                        JOptionPane.showMessageDialog(this, "El producto no existe");
+                                 }
+                      break;
+                    }
+                      
+                } catch (NumberFormatException ex) {
+                                    JOptionPane.showMessageDialog(this, "algunos campos deben ser datos numericos, cambia los errores");
+                } catch (IOException ex) {     
+            Logger.getLogger(Registro_productos.class.getName()).log(Level.SEVERE, null, ex);
+        }  
+    }//GEN-LAST:event_bmodificacionActionPerformed
 
     private void tfprecioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tfprecioActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_tfprecioActionPerformed
-    public void get(){
+
+    private void bbuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bbuscarActionPerformed
+        metodos ne =new metodos();
+        try{
+            int id1=Integer.parseInt(tfidprod.getText());
+        String re =ne.gett("http://localhost/appi/get_registro_producto.php?id="+id1);
+        String rer =ne.gett("http://localhost/appi/get_productos_inventario.php?id="+id1);
+                                JSONArray j= new JSONArray(re);
+                                JSONArray j2= new JSONArray(rer);
+                                
+                                if (j2.length() > 0) {
+                                    for (int i = 0; i < j2.length(); i++) {
+                    JSONObject jsonObject = j2.getJSONObject(i);
+                     cantidad = jsonObject.getInt("cantidad");}}
+                                 if (j.length() > 0) {
+                                    for (int i = 0; i < j.length(); i++) {
+                    JSONObject jsonObject = j.getJSONObject(i);
+                    String nombre2 = jsonObject.getString("nombre");
+                    int prec = jsonObject.getInt("precio");
+                    String pres = jsonObject.getString("descripcion");
+                                    tfprecio.setText(""+prec);
+                                    tfnombrepro.setText(nombre2);
+                                    JOptionPane.showMessageDialog(this, "El producto es:\n"
+                                            + "Nombre: "+nombre2+"\n"
+                                            +"Precio: "+prec+"\n"
+                                            +"Precentacion: "+pres+"\n");
+                                    tfcanpro.setEnabled(true);
+                                    tffecha.setEnabled(true);
+                                   
+                                    }
+                                    bmodificacion.setEnabled(true);
+                                 }else{
+                                 
+                                JOptionPane.showMessageDialog(this, "El producto no existe");
+                                 
+                                 }
+        }catch(NumberFormatException g){
+                
+        } catch (IOException ex) {
+            Logger.getLogger(Ventas_productos.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_bbuscarActionPerformed
+    public void get(String x){
         try {
             // URL del API
-            URL url = new URL("http://localhost/appi/get_ventas_productos.php");
+            URL url = new URL(x);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
             
@@ -213,16 +385,15 @@ public class Ventas_productos extends javax.swing.JFrame {
                 
                 // Parsear la respuesta JSON
                 JSONArray jsonArray = new JSONArray(response.toString());
-                
-                // Recorrer el array y agregar los datos al modelo de la tabla
+                model.setRowCount(0);
                 for (int i = 0; i < jsonArray.length(); i++) {
                     JSONObject jsonObject = jsonArray.getJSONObject(i);
                     int id_venta = jsonObject.getInt("id_venta");
-                    int id_producto = jsonObject.getInt("id_producto");
+                        int id_producto = jsonObject.getInt("id_producto");
                     String fecha_venta = jsonObject.getString("fecha_venta");
                     int cantidad_productos = jsonObject.getInt("cantidad_productos");
-                    int precio = jsonObject.getInt("precio");
-                    String nombre_producto = jsonObject.getString("nombre_producto");
+                    int precio = jsonObject.getInt("Precio");
+                    String nombre_producto = jsonObject.getString("Nombre_producto");
                     model.addRow(new Object[]{ id_venta, id_producto, fecha_venta, cantidad_productos, precio, nombre_producto});
                 }
             } else {
@@ -267,7 +438,8 @@ public class Ventas_productos extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
+    private javax.swing.JButton bbuscar;
+    private javax.swing.JButton bmodificacion;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;

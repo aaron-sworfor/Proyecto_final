@@ -32,12 +32,9 @@ public class menu extends javax.swing.JFrame {
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenu3 = new javax.swing.JMenu();
-        jMenu4 = new javax.swing.JMenu();
-        jMenu5 = new javax.swing.JMenu();
         jMenu18 = new javax.swing.JMenu();
         jMenu2 = new javax.swing.JMenu();
         jMenu6 = new javax.swing.JMenu();
-        jMenu7 = new javax.swing.JMenu();
         jMenu8 = new javax.swing.JMenu();
         jMenu19 = new javax.swing.JMenu();
         jMenu9 = new javax.swing.JMenu();
@@ -78,22 +75,6 @@ public class menu extends javax.swing.JFrame {
         });
         jMenu1.add(jMenu3);
 
-        jMenu4.setText("Añadir productos_inventarios");
-        jMenu4.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jMenu4MouseClicked(evt);
-            }
-        });
-        jMenu1.add(jMenu4);
-
-        jMenu5.setText("Añadir actualizar_inventario");
-        jMenu5.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jMenu5MouseClicked(evt);
-            }
-        });
-        jMenu1.add(jMenu5);
-
         jMenu18.setText("Añadir ventas_producto");
         jMenu18.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -114,14 +95,6 @@ public class menu extends javax.swing.JFrame {
             }
         });
         jMenu2.add(jMenu6);
-
-        jMenu7.setText("Eliminar productos_inventarios");
-        jMenu7.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jMenu7MouseClicked(evt);
-            }
-        });
-        jMenu2.add(jMenu7);
 
         jMenu8.setText("Eliminar actualizar_inventario");
         jMenu8.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -234,20 +207,6 @@ public class menu extends javax.swing.JFrame {
             this.setVisible(false);
     }//GEN-LAST:event_jMenu3MouseClicked
 
-    private void jMenu4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenu4MouseClicked
-        Productos_inventario entrar = new Productos_inventario();
-        entrar.setVisible(true);
-        entrar.seleccion("insertar");
-            this.setVisible(false);
-    }//GEN-LAST:event_jMenu4MouseClicked
-
-    private void jMenu5MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenu5MouseClicked
-        Actualizacion_inventario entrar = new Actualizacion_inventario();
-        entrar.setVisible(true);
-        entrar.seleccion("insertar");
-            this.setVisible(false);
-    }//GEN-LAST:event_jMenu5MouseClicked
-
     private void jMenu18MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenu18MouseClicked
         Ventas_productos entrar = new Ventas_productos();
         entrar.setVisible(true);
@@ -261,13 +220,6 @@ public class menu extends javax.swing.JFrame {
         entrar.seleccion("eliminar");
             this.setVisible(false);
     }//GEN-LAST:event_jMenu6MouseClicked
-
-    private void jMenu7MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenu7MouseClicked
-        Productos_inventario entrar = new Productos_inventario();
-        entrar.setVisible(true);
-        entrar.seleccion("eliminar");
-            this.setVisible(false);
-    }//GEN-LAST:event_jMenu7MouseClicked
 
     private void jMenu8MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jMenu8MouseClicked
         Actualizacion_inventario entrar = new Actualizacion_inventario();
@@ -344,15 +296,12 @@ public class menu extends javax.swing.JFrame {
     public void seleccion(String x){
         if (x.equals("ventas")){
             jMenu3.setEnabled(false);
-            jMenu4.setEnabled(false);
             jMenu6.setEnabled(false);
-            jMenu7.setEnabled(false);
             jMenu10.setEnabled(false);
             jMenu11.setEnabled(false);
             jMenu14.setEnabled(false);
             jMenu15.setEnabled(false);
         }else if(x.equals("inventario")){
-            jMenu5.setEnabled(false);
             jMenu18.setEnabled(false);
             jMenu8.setEnabled(false);
             jMenu19.setEnabled(false);
@@ -414,10 +363,7 @@ public class menu extends javax.swing.JFrame {
     private javax.swing.JMenu jMenu20;
     private javax.swing.JMenu jMenu21;
     private javax.swing.JMenu jMenu3;
-    private javax.swing.JMenu jMenu4;
-    private javax.swing.JMenu jMenu5;
     private javax.swing.JMenu jMenu6;
-    private javax.swing.JMenu jMenu7;
     private javax.swing.JMenu jMenu8;
     private javax.swing.JMenu jMenu9;
     private javax.swing.JMenuBar jMenuBar1;

@@ -8,11 +8,13 @@ import javax.swing.*;
 import java.io.*;
 import java.awt.*;
 import java.net.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.json.*;
 import javax.swing.table.DefaultTableModel;
 public class Registro_productos extends javax.swing.JFrame {
     DefaultTableModel model;
-
+    int no=0;
     String op="";
     public Registro_productos() {
         initComponents();
@@ -23,10 +25,21 @@ public class Registro_productos extends javax.swing.JFrame {
         model.addColumn("descripcion");
         model.addColumn("precio");
         this.jTable1.setModel(model);
-        get();
+        get("http://localhost/appi/get_registro_producto.php");
     }
     public void seleccion(String x){
+         tfmarca.setText("");
+            tfnombre.setText("");
+            tfpresentacion.setText("");
+            tfprecio.setText("0");
+            tfid.setText("");
         jButton1.setText(x);
+        if(x=="eliminar"||x=="actualizar"|| x=="buscar"){
+            tfmarca.setEnabled(false);
+            tfnombre.setEnabled(false);
+            tfpresentacion.setEnabled(false);
+            tfprecio.setEnabled(false);
+        }
     }
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -133,6 +146,7 @@ public class Registro_productos extends javax.swing.JFrame {
         });
         getContentPane().add(tfid, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 20, 200, 30));
 
+        tfprecio.setText("0");
         tfprecio.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 tfprecioActionPerformed(evt);
@@ -172,14 +186,80 @@ public class Registro_productos extends javax.swing.JFrame {
                     int id1=Integer.parseInt(tfid.getText());
                     String nombre1=tfnombre.getText();
                     String marca1=tfmarca.getText();
+                    String op=jButton1.getText();
                     String presentacion1=tfpresentacion.getText();
                     int precio1=Integer.parseInt(tfprecio.getText());
-                    if(jButton1.getText().equals("insertar")&& tfid.getText()!="" && tfmarca.getText()!="" && tfnombre.getText()!="" && tfpresentacion.getText()!=""&& tfprecio.getText()!=""){
-                        ne.insertar("http://localhost/appi/insertar_producto.php", "id="+id1+"&nombre="+nombre1+"&marca="+marca1+"&descripcion="+presentacion1+"&precio="+precio1);
-                        get();}   
+                    switch(op){
+                        case "insertar":
+                                if(tfid.getText()!="" && tfmarca.getText()!="" && tfnombre.getText()!="" && tfpresentacion.getText()!=""&& tfprecio.getText()!=""){
+                                String re =ne.gett("http://localhost/appi/get_registro_producto.php?id="+id1);
+                                JSONArray j= new JSONArray(re);
+                                 if (j.length() > 0) {
+                                     JOptionPane.showMessageDialog(this, "El producto tiene una ID duplicada a un producto existente");
+                                 
+                                 }else{
+                                     ne.insertar("http://localhost/appi/insertar_producto.php", "id="+id1+"&nombre="+nombre1+"&marca="+marca1+"&descripcion="+presentacion1+"&precio="+precio1);
+                                get("http://localhost/appi/get_registro_producto.php");
+                                JOptionPane.showMessageDialog(this, "El producto se inserto correctamente");
+                                 
+                                 }
+                                tfmarca.setText("");
+            tfnombre.setText("");
+            tfpresentacion.setText("");
+            tfprecio.setText("0");
+            tfid.setText("");
+                                } 
+                            break;
+                        case "eliminar":
+                                String re =ne.gett("http://localhost/appi/get_registro_producto.php?id="+id1);
+                                JSONArray j= new JSONArray(re);
+                                 if (j.length() > 0) {
+                                   ne.borrar("http://localhost/appi/borrar_producto.php?id="+id1);
+                                   get("http://localhost/appi/get_registro_producto.php");
+                                   seleccion(jButton1.getText());
+                                   JOptionPane.showMessageDialog(this, "El producto se elimino correctamente");
+                                 
+                                 }else{
+                                        JOptionPane.showMessageDialog(this, "El producto no existe");
+                                 }
+                      break;
+                        case "actualizar":
+                                re =ne.gett("http://localhost/appi/get_registro_producto.php?id="+id1);
+                                JSONArray j2= new JSONArray(re);
+                                 if (j2.length() > 0 ) {
+                                     tfmarca.setEnabled(true);
+                                     tfnombre.setEnabled(true);
+                                     tfpresentacion.setEnabled(true);
+                                     tfprecio.setEnabled(true);
+                                     get("http://localhost/appi/get_registro_producto.php?id="+id1);
+                                     if(no==1){
+                                         no=0;
+                                   ne.actualizar("http://localhost/appi/actualizar_producto.php?id="+id1+"&nombre="+nombre1+"&marca="+marca1+"&descripcion="+presentacion1+"&precio="+precio1);
+                                   get("http://localhost/appi/get_registro_producto.php");
+                                   seleccion(jButton1.getText());
+                                     JOptionPane.showMessageDialog(this, "El producto se actualizo");}
+                                      no=1;
+                                 }else{
+                                        JOptionPane.showMessageDialog(this, "El producto no existe");
+                                 }
+                      break;
+                        case "buscar":
+                                 re =ne.gett("http://localhost/appi/get_registro_producto.php?id="+id1);
+                                JSONArray jg= new JSONArray(re);
+                                 if (jg.length() > 0) {
+                                   get("http://localhost/appi/get_registro_producto.php?id="+id1);
+                                     seleccion(jButton1.getText());
+                                 }else{
+                                        JOptionPane.showMessageDialog(this, "El producto no existe");
+                                 }
+                      break;
+                    }
+                      
                 } catch (NumberFormatException ex) {
                                     JOptionPane.showMessageDialog(this, "El 'ID' y el 'precio' deben ser dato numericos");
-                }     
+                } catch (IOException ex) {     
+            Logger.getLogger(Registro_productos.class.getName()).log(Level.SEVERE, null, ex);
+        }     
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void tfidActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tfidActionPerformed
@@ -189,10 +269,10 @@ public class Registro_productos extends javax.swing.JFrame {
     private void tfprecioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tfprecioActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_tfprecioActionPerformed
-    public void get(){
+    public void get(String x){
         try {
             // URL del API
-            URL url = new URL("http://localhost/appi/get_registro_producto.php");
+            URL url = new URL(x);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
             

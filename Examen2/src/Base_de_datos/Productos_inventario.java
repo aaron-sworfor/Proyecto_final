@@ -8,6 +8,8 @@ import javax.swing.*;
 import java.io.*;
 import java.awt.*;
 import java.net.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.json.*;
 import javax.swing.table.DefaultTableModel;
 
@@ -17,13 +19,15 @@ import javax.swing.table.DefaultTableModel;
  */
 public class Productos_inventario extends javax.swing.JFrame {
     DefaultTableModel model;
+    int no=0;
+    String op;
     public Productos_inventario() {
         initComponents();
         model = new DefaultTableModel();
         model.addColumn("id");
         model.addColumn("Cantidad");
         this.jTable1.setModel(model);
-        get();
+        get("http://localhost/appi/get_productos_inventario.php");
     }
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -56,6 +60,7 @@ public class Productos_inventario extends javax.swing.JFrame {
         jLabel2.setText("Cantidad");
         getContentPane().add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 110, 100, 20));
 
+        tfcantidad.setText("0");
         tfcantidad.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 tfcantidadActionPerformed(evt);
@@ -104,7 +109,13 @@ public class Productos_inventario extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
     public void seleccion(String x){
+        tfid.setText("");
+        tfcantidad.setText("0");
         jButton1.setText(x);
+        if(x=="actualizar"|| x=="buscar"){
+            tfcantidad.setEnabled(false);
+           
+        }
     } 
     private void regresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_regresarActionPerformed
         menu entrar = new menu();
@@ -121,13 +132,52 @@ public class Productos_inventario extends javax.swing.JFrame {
     }//GEN-LAST:event_tfidActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
+        metodos ne=new metodos();
+        op=jButton1.getText();  
+        try {
+                    int id1=Integer.parseInt(tfid.getText());
+                    int cantidad1=Integer.parseInt(tfcantidad.getText());
+                    switch(op){
+                        case "actualizar":
+                                String re =ne.gett("http://localhost/appi/get_productos_inventario.php?id="+id1);
+                                JSONArray j2= new JSONArray(re);
+                                 if (j2.length() > 0 ) {
+                                     tfcantidad.setEnabled(true);
+                                     get("http://localhost/appi/get_productos_inventario.php?id="+id1);
+                                     if(no==1){
+                                         no=0;
+                                   ne.actualizar("http://localhost/appi/actualizar_producto_inventario.php?id="+id1+"&cantidad="+cantidad1);
+                                   get("http://localhost/appi/get_productos_inventario.php");
+                                     JOptionPane.showMessageDialog(this, "La cantidad en el inventario se actualizo");
+                                         seleccion(jButton1.getText());}
+                                      no=1;
+                                 }else{
+                                        JOptionPane.showMessageDialog(this, "El producto no existe");
+                                 }
+                      break;
+                        case "buscar":
+                                 re =ne.gett("http://localhost/appi/get_productos_inventario.php?id="+id1);
+                                JSONArray jg= new JSONArray(re);
+                                 if (jg.length() > 0) {
+                                   get("http://localhost/appi/get_productos_inventario.php?id="+id1);
+                                     seleccion(jButton1.getText());
+                                 }else{
+                                        JOptionPane.showMessageDialog(this, "El producto no existe");
+                                 }
+                      break;
+                    }
+                      
+                } catch (NumberFormatException ex) {
+                                    JOptionPane.showMessageDialog(this, "algunos campos deben ser datos numericos, cambia los errores");
+                } catch (IOException ex) {     
+            Logger.getLogger(Registro_productos.class.getName()).log(Level.SEVERE, null, ex);
+        } 
     }//GEN-LAST:event_jButton1ActionPerformed
 
-    public void get(){
+    public void get(String x){
         try {
             // URL del API
-            URL url = new URL("http://localhost/appi/get_productos_inventario.php");
+            URL url = new URL(x);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
             
@@ -142,11 +192,8 @@ public class Productos_inventario extends javax.swing.JFrame {
                     response.append(inputLine);
                 }
                 reader.close();
-                
-                // Parsear la respuesta JSON
+                model.setRowCount(0);
                 JSONArray jsonArray = new JSONArray(response.toString());
-                
-                // Recorrer el array y agregar los datos al modelo de la tabla
                 for (int i = 0; i < jsonArray.length(); i++) {
                     JSONObject jsonObject = jsonArray.getJSONObject(i);
                     int id = jsonObject.getInt("id");
@@ -154,9 +201,7 @@ public class Productos_inventario extends javax.swing.JFrame {
                     
                     model.addRow(new Object[]{id, cantidad});
                 }
-            } else {
-                System.out.println("Error en la solicitud HTTP: " + responseCode);
-            }
+            } 
             
             conn.disconnect();
         } catch (Exception e) {
@@ -164,10 +209,7 @@ public class Productos_inventario extends javax.swing.JFrame {
         }
     }
     
-    
-    public void selecccion(String x){
-        
-    }
+  
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">

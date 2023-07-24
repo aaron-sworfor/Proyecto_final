@@ -8,9 +8,12 @@ import javax.swing.*;
 import java.io.*;
 import java.awt.*;
 import java.net.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.json.*;
 import javax.swing.table.DefaultTableModel;
 public class Actualizacion_inventario extends javax.swing.JFrame {
+    int no=0;
    DefaultTableModel model;
     String op="";
     public Actualizacion_inventario() {
@@ -21,11 +24,20 @@ public class Actualizacion_inventario extends javax.swing.JFrame {
         model.addColumn("id");
         model.addColumn("cantidad");
         this.jTable1.setModel(model);
-        get();
+        
+        get("http://localhost/appi/get_actualizacion_inventario.php");
     }
 
     public void seleccion (String x){
         jButton1.setText(x);
+        tfcantidad.setText("0");
+        tffechacompra.setText("DD/MM/AAAA");
+        tfid.setText("0");
+        tfnumfactura.setText("0");
+        if(x=="eliminar"||x=="actualizar"|| x=="buscar"){
+            tfcantidad.setEnabled(false);
+            tffechacompra.setEnabled(false);
+            tfid.setEnabled(false);}
     }
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -156,12 +168,68 @@ public class Actualizacion_inventario extends javax.swing.JFrame {
     }//GEN-LAST:event_tfcantidadActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
+         metodos ne=new metodos();
+        try {
+                    int id1=Integer.parseInt(tfid.getText());
+                    String fech=tffechacompra.getText();
+                    String op=jButton1.getText();
+                    int numf=Integer.parseInt(tfnumfactura.getText());
+                    int cant=Integer.parseInt(tfcantidad.getText());
+                    switch(op){
+                        case "eliminar":
+                                String re =ne.gett("http://localhost/appi/get_actualizacion_inventario.php?numfactura="+numf);
+                                JSONArray j= new JSONArray(re);
+                                 if (j.length() > 0) {
+                                   ne.borrar("http://localhost/appi/borrar_actualizacion.php?numfactura="+numf);
+                                   get("http://localhost/appi/get_actualizacion_inventario.php");
+                                   seleccion(jButton1.getText());
+                                   JOptionPane.showMessageDialog(this, "El registro se elimino correctamente");
+                                 
+                                 }else{
+                                        JOptionPane.showMessageDialog(this, "El regitro no existe");
+                                 }
+                      break;
+                        case "actualizar":
+                                re =ne.gett("http://localhost/appi/get_actualizacion_inventario.php?numfactura="+numf);
+                                JSONArray j2= new JSONArray(re);
+                                 if (j2.length() > 0 ) {
+                                     tfcantidad.setEnabled(true);
+                                     tffechacompra.setEnabled(true);
+                                     tfid.setEnabled(true);
+                                     get("http://localhost/appi/get_actualizacion_inventario.php?id="+id1);
+                                     if(no==1){
+                                         no=0;
+                                    ne.actualizar("http://localhost/appi/actualizar_actualizacion.php?numfactura="+numf+"&id="+id1+"&fechcompra="+fech+"&cantidad="+cant);
+                                     get("http://localhost/appi/get_actualizacion_inventario.php");
+                                   seleccion(jButton1.getText());
+                                     JOptionPane.showMessageDialog(this, "El producto se actualizo");}
+                                      no=1;
+                                 }else{
+                                        JOptionPane.showMessageDialog(this, "El producto no existe");
+                                 }
+                      break;
+                        case "buscar":
+                                 re =ne.gett("http://localhost/appi/get_actualizacion_inventario.php?numfactura="+numf);
+                                JSONArray jg= new JSONArray(re);
+                                 if (jg.length() > 0) {
+                                   get("http://localhost/appi/get_actualizacion_inventario.php?numfactura="+numf);
+                                     seleccion(jButton1.getText());
+                                 }else{
+                                        JOptionPane.showMessageDialog(this, "El registro no existe");
+                                 }
+                      break;
+                    }
+                      
+                } catch (NumberFormatException ex) {
+                                    JOptionPane.showMessageDialog(this, "El 'ID' y el 'precio' deben ser dato numericos");
+                } catch (IOException ex) {     
+            Logger.getLogger(Registro_productos.class.getName()).log(Level.SEVERE, null, ex);
+        } 
     }//GEN-LAST:event_jButton1ActionPerformed
-    public void get(){
+    public void get(String x){
         try {
             // URL del API
-            URL url = new URL("http://localhost/appi/get_actualizacion_inventario.php");
+            URL url = new URL(x);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
             
@@ -179,14 +247,13 @@ public class Actualizacion_inventario extends javax.swing.JFrame {
                 
                 // Parsear la respuesta JSON
                 JSONArray jsonArray = new JSONArray(response.toString());
-                
-                // Recorrer el array y agregar los datos al modelo de la tabla
+                 model.setRowCount(0);
                 for (int i = 0; i < jsonArray.length(); i++) {
                     JSONObject jsonObject = jsonArray.getJSONObject(i);
                     String fechcompra = jsonObject.getString("fechcompra");
-                    String numfactura = jsonObject.getString("numfactura");
+                    int numfactura = jsonObject.getInt("numfactura");
                     int id = jsonObject.getInt("id");
-                    int cantidad = jsonObject.getInt("cantidad");
+                    int cantidad = jsonObject.getInt("Cantidad");
                     
                     model.addRow(new Object[]{ fechcompra, numfactura, id, cantidad});
                 }

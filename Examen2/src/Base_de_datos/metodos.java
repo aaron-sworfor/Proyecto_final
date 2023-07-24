@@ -53,4 +53,29 @@ public class metodos {
             {
             }
     }
+    
+    public void borrar(String x){
+        try {
+            URL url = new URL(x);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("DELETE");
+            int responseCode = connection.getResponseCode();
+            connection.disconnect();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    public void actualizar(String x){
+        try {
+            URL url = new URL(x);
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("PUT");
+            int responseCode = connection.getResponseCode();
+            connection.disconnect();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }
