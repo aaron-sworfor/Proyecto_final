@@ -71,6 +71,7 @@ public class Ventas_productos extends javax.swing.JFrame {
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
         bbuscar = new javax.swing.JButton();
+        bimprimir = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -84,7 +85,7 @@ public class Ventas_productos extends javax.swing.JFrame {
                 regresarActionPerformed(evt);
             }
         });
-        getContentPane().add(regresar, new org.netbeans.lib.awtextra.AbsoluteConstraints(480, 80, 130, 30));
+        getContentPane().add(regresar, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 20, 150, 30));
 
         jLabel2.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
         jLabel2.setText("Id_producto");
@@ -148,7 +149,7 @@ public class Ventas_productos extends javax.swing.JFrame {
                 bmodificacionActionPerformed(evt);
             }
         });
-        getContentPane().add(bmodificacion, new org.netbeans.lib.awtextra.AbsoluteConstraints(480, 140, 100, 30));
+        getContentPane().add(bmodificacion, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 120, 150, 30));
 
         tfprecio.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -183,7 +184,16 @@ public class Ventas_productos extends javax.swing.JFrame {
                 bbuscarActionPerformed(evt);
             }
         });
-        getContentPane().add(bbuscar, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 30, 150, 30));
+        getContentPane().add(bbuscar, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 70, 150, 30));
+
+        bimprimir.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
+        bimprimir.setText("imprimir ticket");
+        bimprimir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bimprimirActionPerformed(evt);
+            }
+        });
+        getContentPane().add(bimprimir, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 170, 150, 30));
 
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/fondo inicio.png"))); // NOI18N
         getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 620, 390));
@@ -364,6 +374,10 @@ public class Ventas_productos extends javax.swing.JFrame {
             Logger.getLogger(Ventas_productos.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_bbuscarActionPerformed
+
+    private void bimprimirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bimprimirActionPerformed
+         
+    }//GEN-LAST:event_bimprimirActionPerformed
     public void get(String x){
         try {
             // URL del API
@@ -439,6 +453,7 @@ public class Ventas_productos extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton bbuscar;
+    private javax.swing.JButton bimprimir;
     private javax.swing.JButton bmodificacion;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
