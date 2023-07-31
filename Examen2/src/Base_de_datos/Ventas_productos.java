@@ -16,6 +16,15 @@ public class Ventas_productos extends javax.swing.JFrame {
     int no=0;
     String op="";
     int cantidad=0;
+    int id1;
+    int idven;
+    String fech;
+    int cantidad2[];
+    int precios [];
+    int id_factura;
+    String productos[];
+    int i=0;
+    int total=0;
    DefaultTableModel model;
     public Ventas_productos() {
         initComponents();
@@ -26,6 +35,7 @@ public class Ventas_productos extends javax.swing.JFrame {
         model.addColumn("cantidad_productos");
         model.addColumn("precio");
         model.addColumn("nombre_producto");
+        model.addColumn("id_factura");
         this.jTable1.setModel(model);
         get("http://localhost/appi/get_ventas_productos.php");
     }
@@ -72,6 +82,8 @@ public class Ventas_productos extends javax.swing.JFrame {
         jTable1 = new javax.swing.JTable();
         bbuscar = new javax.swing.JButton();
         bimprimir = new javax.swing.JButton();
+        tffactura = new javax.swing.JTextField();
+        jLabel8 = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -175,7 +187,7 @@ public class Ventas_productos extends javax.swing.JFrame {
         ));
         jScrollPane1.setViewportView(jTable1);
 
-        getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 300, 620, 260));
+        getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 380, 620, 260));
 
         bbuscar.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
         bbuscar.setText("Buscar_producto ");
@@ -194,6 +206,17 @@ public class Ventas_productos extends javax.swing.JFrame {
             }
         });
         getContentPane().add(bimprimir, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 170, 150, 30));
+
+        tffactura.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                tffacturaActionPerformed(evt);
+            }
+        });
+        getContentPane().add(tffactura, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 310, 200, 30));
+
+        jLabel8.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
+        jLabel8.setText("id_factura");
+        getContentPane().add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 310, 160, 20));
 
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/fondo inicio.png"))); // NOI18N
         getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 620, 390));
@@ -230,13 +253,14 @@ public class Ventas_productos extends javax.swing.JFrame {
     private void bmodificacionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bmodificacionActionPerformed
         metodos ne=new metodos();
         try {
-                    int id1=Integer.parseInt(tfidprod.getText());
-                    int idven=Integer.parseInt(tfidventa.getText());
+                     id1=Integer.parseInt(tfidprod.getText());
+                     idven=Integer.parseInt(tfidventa.getText());
                     String nombre1=tfnombrepro.getText();
-                    String fech=tffecha.getText();
+                    fech=tffecha.getText();
                     op=bmodificacion.getText();
                     int cantidad1=Integer.parseInt(tfcanpro.getText());
                     int precio1=Integer.parseInt(tfprecio.getText());
+                     id_factura=Integer.parseInt(tffactura.getText());
                     switch(op){
                         case "insertar":
                                 if(tfidventa.getText()!="" && tffecha.getText()!="" && tfcanpro.getText() !="" && cantidad > cantidad1){
@@ -246,30 +270,16 @@ public class Ventas_productos extends javax.swing.JFrame {
                                      JOptionPane.showMessageDialog(this, "El producto tiene una ID duplicada a un producto existente");
                                  
                                  }else{
-                                     ne.insertar("http://localhost/appi/insertar_venta.php", "id_venta="+idven+"&id_producto="+id1+"&fecha_venta="+fech+"&cantidad_productos="+cantidad1+"&precio="+precio1+"&nombre_producto="+nombre1);
+                                     ne.insertar("http://localhost/appi/insertar_venta.php", "id_venta="+idven+"&id_producto="+id1+"&fecha_venta="+fech+"&cantidad_productos="+cantidad1+"&precio="+precio1+"&nombre_producto="+nombre1+"&id_factura="+id_factura);
                                      ne.insertar("http://localhost/appi/insertar_venta_actualizacion.php", "numfactura="+idven+"&id="+id1+"&fechcompra="+fech+"&cantidad="+cantidad1);
                                      ne.actualizar("http://localhost/appi/descantar_producto_inventario.php?id"+id1+"&cantidad="+cantidad1);
                                 get("http://localhost/appi/get_ventas_productos.php");
-                                int total =cantidad1*precio1;
-                                JOptionPane.showMessageDialog(this, "La venta se concreto correctamente"
-                                                                              + "\n-----------------------------------------\n"
-                                                                              + "|id de venta            |"+idven
-                                                                              + "\n-----------------------------------------\n"
-                                                                              + "|id de producto         |"+id1
-                                                                              + "\n-----------------------------------------\n"
-                                                                              + "|fecha de la venta      |"+fech
-                                                                              + "\n-----------------------------------------\n"
-                                                                              + "|nombre del producto    |"+nombre1
-                                                                              + "\n-----------------------------------------\n"
-                                                                              + "|cantidad del producto  |"+cantidad1
-                                                                              + "\n-----------------------------------------\n"
-                                                                              + "|precio del producto    |"+precio1
-                                                                              + "\n-----------------------------------------\n"
-                                                                              + "|total del producto     |"+total
-                                                                              + "\n-----------------------------------------\n");
-                                
-                                 
-                                 }
+                                total=total + (cantidad1*precio1);
+                                precios[i]=precio1;
+                                productos[i]=nombre1;
+                               cantidad2[i]=cantidad1;
+                                i++;
+                                }
                                     seleccion(bmodificacion.getText());
                                 }else if (cantidad < cantidad1){
                                     JOptionPane.showMessageDialog(this, "La cantidad que se quiere comprar es mayor que la del almacen,porfavor de camiar la cantidad");
@@ -300,14 +310,14 @@ public class Ventas_productos extends javax.swing.JFrame {
                                     tfidprod.setEnabled(true);
                                      get("http://localhost/appi/get_ventas_productos.php?id_venta="+idven);
                                      if(no==1){
-                                     ne.actualizar("http://localhost/appi/actualizar_venta.php?id_venta="+idven+"&id_producto="+id1+"&fecha_venta="+fech+"&cantidad_productos="+cantidad1+"&precio="+precio1+"&nombre_producto="+nombre1);
+                                     ne.actualizar("http://localhost/appi/actualizar_venta.php?id_venta="+idven+"&id_producto="+id1+"&fecha_venta="+fech+"&cantidad_productos="+cantidad1+"&precio="+precio1+"&nombre_producto="+nombre1+"&id_factura="+id_factura);
                                    get("http://localhost/appi/get_ventas_productos.php");
                                    seleccion(bmodificacion.getText());
                                     no=0;
-                                     JOptionPane.showMessageDialog(this, "El producto se actualizo");}
+                                     JOptionPane.showMessageDialog(this, "El Registro se actualizo");}
                                       no=1;
                                  }else{
-                                        JOptionPane.showMessageDialog(this, "El producto no existe");
+                                        JOptionPane.showMessageDialog(this, "El Registro no existe");
                                  }
                       break;
                         case "buscar":
@@ -360,6 +370,7 @@ public class Ventas_productos extends javax.swing.JFrame {
                                             +"Precentacion: "+pres+"\n");
                                     tfcanpro.setEnabled(true);
                                     tffecha.setEnabled(true);
+                                    tffactura.setEnabled(false);
                                    
                                     }
                                     bmodificacion.setEnabled(true);
@@ -376,8 +387,27 @@ public class Ventas_productos extends javax.swing.JFrame {
     }//GEN-LAST:event_bbuscarActionPerformed
 
     private void bimprimirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bimprimirActionPerformed
-         
+        System.out.println("                    venta                     ");
+        System.out.println("----------------------------------------------");
+        System.out.println(  " fecha de venta "+fech);
+        System.out.println(  " id de venta    "+idven);
+        System.out.println(  " id de factura  "+id_factura);
+        System.out.println("----------------------------------------------");
+        while(i<0){
+        System.out.println(" "+productos[i]+"....."+precios[i]+" * "+cantidad2[i]);
+        i--;
+        }
+        System.out.println("----------------------------------------------");
+        System.out.println(  " total ........."+total);
+        seleccion(bmodificacion.getText());
+        tffactura.setEnabled(true);
+        tffactura.setText("0");
+        
     }//GEN-LAST:event_bimprimirActionPerformed
+
+    private void tffacturaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tffacturaActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_tffacturaActionPerformed
     public void get(String x){
         try {
             // URL del API
@@ -408,7 +438,8 @@ public class Ventas_productos extends javax.swing.JFrame {
                     int cantidad_productos = jsonObject.getInt("cantidad_productos");
                     int precio = jsonObject.getInt("Precio");
                     String nombre_producto = jsonObject.getString("Nombre_producto");
-                    model.addRow(new Object[]{ id_venta, id_producto, fecha_venta, cantidad_productos, precio, nombre_producto});
+                    int id_factura =jsonObject.getInt("id_factura");
+                    model.addRow(new Object[]{ id_venta, id_producto, fecha_venta, cantidad_productos, precio, nombre_producto, id_factura});
                 }
             } else {
                 System.out.println("Error en la solicitud HTTP: " + responseCode);
@@ -462,10 +493,12 @@ public class Ventas_productos extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
+    private javax.swing.JLabel jLabel8;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
     private javax.swing.JButton regresar;
     private javax.swing.JTextField tfcanpro;
+    private javax.swing.JTextField tffactura;
     private javax.swing.JTextField tffecha;
     private javax.swing.JTextField tfidprod;
     private javax.swing.JTextField tfidventa;
