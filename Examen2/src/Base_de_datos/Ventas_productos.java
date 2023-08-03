@@ -8,6 +8,11 @@ import javax.swing.*;
 import java.io.*;
 import java.awt.*;
 import java.net.*;
+import net.sf.jasperreports.engine.*;
+import net.sf.jasperreports.view.JasperViewer;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.json.*;
@@ -19,10 +24,11 @@ public class Ventas_productos extends javax.swing.JFrame {
     int id1;
     int idven;
     String fech;
-    int cantidad2[];
-    int precios [];
+    ArrayList<Integer> cantidad2 = new ArrayList<>();
+    ArrayList<Integer> precios = new ArrayList<>();
+    ArrayList<String> productos = new ArrayList<>();
+    
     int id_factura;
-    String productos[];
     int i=0;
     int total=0;
    DefaultTableModel model;
@@ -272,12 +278,14 @@ public class Ventas_productos extends javax.swing.JFrame {
                                  }else{
                                      ne.insertar("http://localhost/appi/insertar_venta.php", "id_venta="+idven+"&id_producto="+id1+"&fecha_venta="+fech+"&cantidad_productos="+cantidad1+"&precio="+precio1+"&nombre_producto="+nombre1+"&id_factura="+id_factura);
                                      ne.insertar("http://localhost/appi/insertar_venta_actualizacion.php", "numfactura="+idven+"&id="+id1+"&fechcompra="+fech+"&cantidad="+cantidad1);
-                                     ne.actualizar("http://localhost/appi/descantar_producto_inventario.php?id"+id1+"&cantidad="+cantidad1);
+                                 total=total + (cantidad1*precio1);
+                                precios.add(precio1);
+                                productos.add(nombre1);
+                               cantidad2.add(cantidad1);
+                                     cantidad1=cantidad1 * -1;
+                                   ne.actualizar("http://localhost/appi/actualizar_producto_inventario.php?id="+id1+"&cantidad="+cantidad1);
                                 get("http://localhost/appi/get_ventas_productos.php");
-                                total=total + (cantidad1*precio1);
-                                precios[i]=precio1;
-                                productos[i]=nombre1;
-                               cantidad2[i]=cantidad1;
+                                
                                 i++;
                                 }
                                     seleccion(bmodificacion.getText());
@@ -390,15 +398,30 @@ public class Ventas_productos extends javax.swing.JFrame {
         System.out.println("                    venta                     ");
         System.out.println("----------------------------------------------");
         System.out.println(  " fecha de venta "+fech);
-        System.out.println(  " id de venta    "+idven);
         System.out.println(  " id de factura  "+id_factura);
         System.out.println("----------------------------------------------");
-        while(i<0){
-        System.out.println(" "+productos[i]+"....."+precios[i]+" * "+cantidad2[i]);
-        i--;
+        for(i=0; i< productos.size();i++){
+        System.out.println(" "+productos.get(i)+"                   ..... $"+precios.get(i)+" * "+cantidad2.get(i));
         }
         System.out.println("----------------------------------------------");
         System.out.println(  " total ........."+total);
+        try {
+            String archivoJrxml = "C:/Users/Aaron/Documents/NetBeansProjects/plantilla_empresa.jrxml";
+            JasperReport jasperReport = JasperCompileManager.compileReport(archivoJrxml);
+            Map<String, Object> parametros =new HashMap<>();
+            parametros.put("fech", fech); 
+            parametros.put("id_factura", id_factura); 
+            parametros.put("productos", productos);
+            parametros.put("precios", precios);
+            parametros.put("cantidad2", cantidad2);
+            parametros.put("total", total);
+
+            JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parametros, new JREmptyDataSource());
+            JasperViewer.viewReport(jasperPrint); 
+
+        } catch (JRException e) {
+            e.printStackTrace();
+        }
         seleccion(bmodificacion.getText());
         tffactura.setEnabled(true);
         tffactura.setText("0");

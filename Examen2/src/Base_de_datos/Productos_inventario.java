@@ -144,7 +144,7 @@ public class Productos_inventario extends javax.swing.JFrame {
                                  if (j2.length() > 0 ) {
                                      tfcantidad.setEnabled(true);
                                      get("http://localhost/appi/get_productos_inventario.php?id="+id1);
-                                     if(no==1){
+                                     if(no==1 && tfcantidad.getText() != "0"){
                                          no=0;
                                    ne.actualizar("http://localhost/appi/actualizar_producto_inventario.php?id="+id1+"&cantidad="+cantidad1);
                                    get("http://localhost/appi/get_productos_inventario.php");
