@@ -4,12 +4,30 @@
  * and open the template in the editor.
  */
 package Base_de_datos;
+
 import javax.swing.*;
 import java.io.*;
 import java.awt.*;
+import java.awt.print.PageFormat;
+import java.awt.print.Paper;
+import java.awt.print.Printable;
+import static java.awt.print.Printable.NO_SUCH_PAGE;
+import static java.awt.print.Printable.PAGE_EXISTS;
+import java.awt.print.PrinterException;
+import java.awt.print.PrinterJob;
 import java.net.*;
-import net.sf.jasperreports.engine.*;
-import net.sf.jasperreports.view.JasperViewer;
+import com.itextpdf.kernel.geom.PageSize;
+import com.itextpdf.kernel.pdf.PdfDocument;
+import com.itextpdf.kernel.pdf.PdfWriter;
+import com.itextpdf.layout.Document;
+import com.itextpdf.layout.element.Paragraph;
+import com.itextpdf.layout.element.Table;
+import com.itextpdf.layout.property.TextAlignment;
+import java.io.File;
+import java.io.IOException;
+
+import static java.nio.file.Files.lines;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -405,22 +423,61 @@ public class Ventas_productos extends javax.swing.JFrame {
         }
         System.out.println("----------------------------------------------");
         System.out.println(  " total ........."+total);
-        try {
-            String archivoJrxml = "C:/Users/Aaron/Documents/NetBeansProjects/plantilla_empresa.jrxml";
-            JasperReport jasperReport = JasperCompileManager.compileReport(archivoJrxml);
-            Map<String, Object> parametros =new HashMap<>();
-            parametros.put("fech", fech); 
-            parametros.put("id_factura", id_factura); 
-            parametros.put("productos", productos);
-            parametros.put("precios", precios);
-            parametros.put("cantidad2", cantidad2);
-            parametros.put("total", total);
+          try {
+       File file = new File("C:/Users/Aaron/Documents/NetBeansProjects/Examen2/ferter "+id_factura+".pdf");
+        file.getParentFile().mkdirs();
+        
+        PdfWriter writer;
+      
+            writer = new PdfWriter(file);
+        
+        PdfDocument pdf = new PdfDocument(writer);
+        Document document = new Document(pdf, PageSize.A7); // Tamaño de un ticket
+        document.setMargins(10, 10, 10, 10);
+        Paragraph header = new Paragraph("Ticket de Compra").setTextAlignment(TextAlignment.CENTER);
+        document.add(header);
+        
+        // Información del ticket
+        Paragraph info = new Paragraph("Número de Factura: " + id_factura + "\nFecha: " + fech);
+        document.add(info);
+        
+        // Lista de productos
+        Table table = new Table(3);
+        table.addCell("Producto");
+        table.addCell("Cantidad");
+        table.addCell("Precio");
+        for (int i = 0; i < productos.size(); i++) {
+    table.addCell(productos.get(i));
+    table.addCell(cantidad2.get(i).toString());
+    table.addCell(precios.get(i).toString());
+    
+    // También podrías calcular el subtotal por producto aquí
+}
 
-            JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parametros, new JREmptyDataSource());
-            JasperViewer.viewReport(jasperPrint); 
-
-        } catch (JRException e) {
-            e.printStackTrace();
+// ... (Calcular el total y agregarlo a la tabla)
+double total = 0.0;
+for (int i = 0; i < productos.size(); i++) {
+    double subtotal =cantidad2.get(i) * precios.get(i);
+    total += subtotal;
+}
+table.addCell("Total");
+table.addCell(""); // Celda vacía para la columna de cantidad
+table.addCell("$" + total);
+        document.add(table);
+        
+        // Total
+        Paragraph totalInfo = new Paragraph("Total: $" + total).setTextAlignment(TextAlignment.RIGHT);
+            document.add(totalInfo);
+         PrinterJob job = PrinterJob.getPrinterJob();
+            if (job.printDialog()) {
+                    job.print();
+            }
+        document.close();
+        
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(Ventas_productos.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (PrinterException ex) {
+            Logger.getLogger(Ventas_productos.class.getName()).log(Level.SEVERE, null, ex);
         }
         seleccion(bmodificacion.getText());
         tffactura.setEnabled(true);
@@ -433,7 +490,7 @@ public class Ventas_productos extends javax.swing.JFrame {
     }//GEN-LAST:event_tffacturaActionPerformed
     public void get(String x){
         try {
-            // URL del API
+          
             URL url = new URL(x);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("GET");
@@ -450,7 +507,7 @@ public class Ventas_productos extends javax.swing.JFrame {
                 }
                 reader.close();
                 
-                // Parsear la respuesta JSON
+          
                 JSONArray jsonArray = new JSONArray(response.toString());
                 model.setRowCount(0);
                 for (int i = 0; i < jsonArray.length(); i++) {
