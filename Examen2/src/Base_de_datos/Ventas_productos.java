@@ -22,6 +22,7 @@ import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
+import com.itextpdf.layout.property.HorizontalAlignment;
 import com.itextpdf.layout.property.TextAlignment;
 import java.io.File;
 import java.io.IOException;
@@ -33,6 +34,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.print.PrintService;
 import org.json.*;
 import javax.swing.table.DefaultTableModel;
 public class Ventas_productos extends javax.swing.JFrame {
@@ -41,6 +43,7 @@ public class Ventas_productos extends javax.swing.JFrame {
     int cantidad=0;
     int id1;
     int idven;
+    String avb="";
     String fech;
     ArrayList<Integer> cantidad2 = new ArrayList<>();
     ArrayList<Integer> precios = new ArrayList<>();
@@ -298,7 +301,7 @@ public class Ventas_productos extends javax.swing.JFrame {
                                      ne.insertar("http://localhost/appi/insertar_venta_actualizacion.php", "numfactura="+idven+"&id="+id1+"&fechcompra="+fech+"&cantidad="+cantidad1);
                                  total=total + (cantidad1*precio1);
                                 precios.add(precio1);
-                                productos.add(nombre1);
+                                productos.add(avb);
                                cantidad2.add(cantidad1);
                                      cantidad1=cantidad1 * -1;
                                    ne.actualizar("http://localhost/appi/actualizar_producto_inventario.php?id="+id1+"&cantidad="+cantidad1);
@@ -386,6 +389,7 @@ public class Ventas_productos extends javax.swing.JFrame {
                                     for (int i = 0; i < j.length(); i++) {
                     JSONObject jsonObject = j.getJSONObject(i);
                     String nombre2 = jsonObject.getString("nombre");
+                     avb = jsonObject.getString("abrevia");
                     int prec = jsonObject.getInt("precio");
                     String pres = jsonObject.getString("descripcion");
                                     tfprecio.setText(""+prec);
@@ -424,7 +428,7 @@ public class Ventas_productos extends javax.swing.JFrame {
         System.out.println("----------------------------------------------");
         System.out.println(  " total ........."+total);
           try {
-       File file = new File("C:/Users/Aaron/Documents/NetBeansProjects/Examen2/ferter "+id_factura+".pdf");
+       File file = new File("C:/Users/Aaron/Documents/NetBeansProjects/Examen2/Venta num."+id_factura+".pdf");
         file.getParentFile().mkdirs();
         
         PdfWriter writer;
@@ -432,51 +436,42 @@ public class Ventas_productos extends javax.swing.JFrame {
             writer = new PdfWriter(file);
         
         PdfDocument pdf = new PdfDocument(writer);
-        Document document = new Document(pdf, PageSize.A7); // Tamaño de un ticket
-        document.setMargins(10, 10, 10, 10);
-        Paragraph header = new Paragraph("Ticket de Compra").setTextAlignment(TextAlignment.CENTER);
-        document.add(header);
-        
-        // Información del ticket
-        Paragraph info = new Paragraph("Número de Factura: " + id_factura + "\nFecha: " + fech);
-        document.add(info);
-        
-        // Lista de productos
-        Table table = new Table(3);
-        table.addCell("Producto");
-        table.addCell("Cantidad");
-        table.addCell("Precio");
-        for (int i = 0; i < productos.size(); i++) {
-    table.addCell(productos.get(i));
-    table.addCell(cantidad2.get(i).toString());
-    table.addCell(precios.get(i).toString());
-    
-    // También podrías calcular el subtotal por producto aquí
-}
-
-// ... (Calcular el total y agregarlo a la tabla)
-double total = 0.0;
-for (int i = 0; i < productos.size(); i++) {
-    double subtotal =cantidad2.get(i) * precios.get(i);
-    total += subtotal;
-}
-table.addCell("Total");
-table.addCell(""); // Celda vacía para la columna de cantidad
-table.addCell("$" + total);
-        document.add(table);
-        
-        // Total
-        Paragraph totalInfo = new Paragraph("Total: $" + total).setTextAlignment(TextAlignment.RIGHT);
-            document.add(totalInfo);
-         PrinterJob job = PrinterJob.getPrinterJob();
-            if (job.printDialog()) {
+            try (Document document = new Document(pdf, PageSize.A7) ) {
+                document.setMargins(10, 10, 10, 10);
+                Paragraph header = new Paragraph("Ticket de Compra").setTextAlignment(TextAlignment.CENTER);
+                
+                document.add(header);
+                document.add(new Paragraph("-----------------------------------------------"));
+                Paragraph info = new Paragraph("Número de Factura: " + id_factura + "\nFecha: " + fech);
+                document.add(info);
+                document.add(new Paragraph("-----------------------------------------------"));
+                for (int i = 0; i < productos.size(); i++) {
+                    document.add(new Paragraph(" "+productos.get(i)+"............... $ "+precios.get(i)+" * "+cantidad2.get(i)).setTextAlignment(TextAlignment.CENTER));
+                }
+                
+                double total = 0.0;
+                for (int i = 0; i < productos.size(); i++) {
+                    double subtotal =cantidad2.get(i) * precios.get(i);
+                    total += subtotal;
+                }
+                
+                document.add(new Paragraph("-----------------------------------------------"));
+                Paragraph totalInfo = new Paragraph("Total: $" + total).setTextAlignment(TextAlignment.RIGHT);
+                document.add(totalInfo);
+                PrinterJob job = PrinterJob.getPrinterJob();
+                PrintService[] printServices = PrinterJob.lookupPrintServices(); 
+                for (PrintService printService : printServices) {
+                    if (printService.getName().equals("La impresora del profe   ")) { // Reemplaza con el nombre de tu impresora
+                         job.setPrintService(printService);
+                             break;
+                        }
+    }
+                if (job.printDialog()) {
                     job.print();
+                }
             }
-        document.close();
         
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(Ventas_productos.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (PrinterException ex) {
+        } catch (FileNotFoundException | PrinterException ex) {
             Logger.getLogger(Ventas_productos.class.getName()).log(Level.SEVERE, null, ex);
         }
         seleccion(bmodificacion.getText());
