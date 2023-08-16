@@ -18,8 +18,11 @@ import java.awt.print.PrinterJob;
 import java.net.*;
 import com.itextpdf.kernel.geom.PageSize;
 import com.itextpdf.kernel.pdf.PdfDocument;
+import com.itextpdf.kernel.pdf.PdfReader;
 import com.itextpdf.kernel.pdf.PdfWriter;
 import com.itextpdf.layout.Document;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import com.itextpdf.layout.element.Paragraph;
 import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.property.HorizontalAlignment;
@@ -28,15 +31,31 @@ import java.io.File;
 import java.io.IOException;
 
 import static java.nio.file.Files.lines;
+import java.nio.file.Paths;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.print.Doc;
+import java.awt.Desktop;
+import javax.print.DocFlavor;
+import javax.print.DocPrintJob;
+import javax.print.PrintException;
 import javax.print.PrintService;
+import javax.print.PrintServiceLookup;
+import javax.print.SimpleDoc;
+import javax.print.attribute.HashPrintRequestAttributeSet;
+import javax.print.attribute.PrintRequestAttributeSet;
+import javax.print.attribute.standard.Copies;
 import org.json.*;
 import javax.swing.table.DefaultTableModel;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperPrintManager;
+import net.sf.jasperreports.engine.util.JRLoader;
+import org.apache.pdfbox.pdmodel.*;
+import org.apache.pdfbox.printing.*;
 public class Ventas_productos extends javax.swing.JFrame {
     int no=0;
     String op="";
@@ -111,7 +130,12 @@ public class Ventas_productos extends javax.swing.JFrame {
         bimprimir = new javax.swing.JButton();
         tffactura = new javax.swing.JTextField();
         jLabel8 = new javax.swing.JLabel();
+        jLabel11 = new javax.swing.JLabel();
+        tftotal = new javax.swing.JTextField();
+        jButton1 = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
+        jLabel9 = new javax.swing.JLabel();
+        jLabel10 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -128,14 +152,14 @@ public class Ventas_productos extends javax.swing.JFrame {
 
         jLabel2.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
         jLabel2.setText("Id_producto");
-        getContentPane().add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 70, 100, 20));
+        getContentPane().add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 120, 100, 20));
 
         tfidprod.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 tfidprodActionPerformed(evt);
             }
         });
-        getContentPane().add(tfidprod, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 70, 200, 30));
+        getContentPane().add(tfidprod, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 120, 200, 30));
 
         jLabel3.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
         jLabel3.setText("Id_venta");
@@ -150,36 +174,36 @@ public class Ventas_productos extends javax.swing.JFrame {
 
         jLabel4.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
         jLabel4.setText("Fecha_venta");
-        getContentPane().add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 120, 120, 20));
+        getContentPane().add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 170, 120, 20));
 
         tffecha.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 tffechaActionPerformed(evt);
             }
         });
-        getContentPane().add(tffecha, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 120, 200, 30));
+        getContentPane().add(tffecha, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 170, 200, 30));
 
         jLabel5.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
         jLabel5.setText("Cantidad_productos");
-        getContentPane().add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 170, 170, 20));
+        getContentPane().add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 220, 170, 20));
 
         tfcanpro.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 tfcanproActionPerformed(evt);
             }
         });
-        getContentPane().add(tfcanpro, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 170, 200, 30));
+        getContentPane().add(tfcanpro, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 220, 200, 30));
 
         jLabel6.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
         jLabel6.setText("Nombre_producto");
-        getContentPane().add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 260, 160, 20));
+        getContentPane().add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 310, 160, 20));
 
         tfnombrepro.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 tfnombreproActionPerformed(evt);
             }
         });
-        getContentPane().add(tfnombrepro, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 260, 200, 30));
+        getContentPane().add(tfnombrepro, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 310, 200, 30));
 
         bmodificacion.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
         bmodificacion.setText("Modificar ");
@@ -195,11 +219,11 @@ public class Ventas_productos extends javax.swing.JFrame {
                 tfprecioActionPerformed(evt);
             }
         });
-        getContentPane().add(tfprecio, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 220, 200, 30));
+        getContentPane().add(tfprecio, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 270, 200, 30));
 
         jLabel7.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
         jLabel7.setText("Precio");
-        getContentPane().add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 220, 100, 20));
+        getContentPane().add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 270, 100, 20));
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -226,7 +250,7 @@ public class Ventas_productos extends javax.swing.JFrame {
         getContentPane().add(bbuscar, new org.netbeans.lib.awtextra.AbsoluteConstraints(460, 70, 150, 30));
 
         bimprimir.setFont(new java.awt.Font("Arial", 0, 14)); // NOI18N
-        bimprimir.setText("imprimir ticket");
+        bimprimir.setText("generar ticket");
         bimprimir.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 bimprimirActionPerformed(evt);
@@ -239,14 +263,36 @@ public class Ventas_productos extends javax.swing.JFrame {
                 tffacturaActionPerformed(evt);
             }
         });
-        getContentPane().add(tffactura, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 310, 200, 30));
+        getContentPane().add(tffactura, new org.netbeans.lib.awtextra.AbsoluteConstraints(220, 70, 200, 30));
 
         jLabel8.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
         jLabel8.setText("id_factura");
-        getContentPane().add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 310, 160, 20));
+        getContentPane().add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 70, 160, 20));
+
+        jLabel11.setText("Total ");
+        getContentPane().add(jLabel11, new org.netbeans.lib.awtextra.AbsoluteConstraints(500, 280, -1, -1));
+
+        tftotal.setText("0");
+        getContentPane().add(tftotal, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 310, 100, 40));
+
+        jButton1.setText("imprimir");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+        getContentPane().add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 220, 110, 40));
 
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/fondo inicio.png"))); // NOI18N
         getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 620, 390));
+
+        jLabel9.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
+        jLabel9.setText("Nombre_producto");
+        getContentPane().add(jLabel9, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 310, 160, 20));
+
+        jLabel10.setFont(new java.awt.Font("Arial", 0, 18)); // NOI18N
+        jLabel10.setText("Nombre_producto");
+        getContentPane().add(jLabel10, new org.netbeans.lib.awtextra.AbsoluteConstraints(30, 310, 160, 20));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -304,9 +350,10 @@ public class Ventas_productos extends javax.swing.JFrame {
                                 productos.add(avb);
                                cantidad2.add(cantidad1);
                                      cantidad1=cantidad1 * -1;
+                                     tftotal.setText(""+total);
                                    ne.actualizar("http://localhost/appi/actualizar_producto_inventario.php?id="+id1+"&cantidad="+cantidad1);
-                                get("http://localhost/appi/get_ventas_productos.php");
-                                
+                                get("http://localhost/appi/buscar_factura.php?id_factura="+id_factura);
+                                    
                                 i++;
                                 }
                                     seleccion(bmodificacion.getText());
@@ -427,10 +474,11 @@ public class Ventas_productos extends javax.swing.JFrame {
         }
         System.out.println("----------------------------------------------");
         System.out.println(  " total ........."+total);
+        String filepad="C:/Users/Aaron/Documents/NetBeansProjects/Examen2/Venta num."+id_factura+".pdf";
+       File pdfFile = Paths.get(filepad).toFile();
           try {
        File file = new File("C:/Users/Aaron/Documents/NetBeansProjects/Examen2/Venta num."+id_factura+".pdf");
         file.getParentFile().mkdirs();
-        
         PdfWriter writer;
       
             writer = new PdfWriter(file);
@@ -446,6 +494,7 @@ public class Ventas_productos extends javax.swing.JFrame {
                 document.add(info);
                 document.add(new Paragraph("-----------------------------------------------"));
                 for (int i = 0; i < productos.size(); i++) {
+                    
                     document.add(new Paragraph(" "+productos.get(i)+"............... $ "+precios.get(i)+" * "+cantidad2.get(i)).setTextAlignment(TextAlignment.CENTER));
                 }
                 
@@ -458,20 +507,9 @@ public class Ventas_productos extends javax.swing.JFrame {
                 document.add(new Paragraph("-----------------------------------------------"));
                 Paragraph totalInfo = new Paragraph("Total: $" + total).setTextAlignment(TextAlignment.RIGHT);
                 document.add(totalInfo);
-                PrinterJob job = PrinterJob.getPrinterJob();
-                PrintService[] printServices = PrinterJob.lookupPrintServices(); 
-                for (PrintService printService : printServices) {
-                    if (printService.getName().equals("La impresora del profe   ")) { // Reemplaza con el nombre de tu impresora
-                         job.setPrintService(printService);
-                             break;
-                        }
-    }
-                if (job.printDialog()) {
-                    job.print();
-                }
-            }
-        
-        } catch (FileNotFoundException | PrinterException ex) {
+                 document.close();
+                 
+             }} catch (FileNotFoundException ex) {
             Logger.getLogger(Ventas_productos.class.getName()).log(Level.SEVERE, null, ex);
         }
         seleccion(bmodificacion.getText());
@@ -483,6 +521,25 @@ public class Ventas_productos extends javax.swing.JFrame {
     private void tffacturaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tffacturaActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_tffacturaActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+      String filepad="C:/Users/Aaron/Documents/NetBeansProjects/Examen2/Proyecto final.pdf";
+        File pdfFile = Paths.get(filepad).toFile();
+        if (Desktop.isDesktopSupported()) {
+            Desktop desktop = Desktop.getDesktop();
+            if (desktop.isSupported(Desktop.Action.PRINT)) {
+                try {
+                    desktop.print(pdfFile);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            } else {
+                System.out.println("La acción de impresión no es compatible.");
+            }
+        } else {
+            System.out.println("El soporte de Desktop no está disponible en este sistema.");
+       }
+    }//GEN-LAST:event_jButton1ActionPerformed
     public void get(String x){
         try {
           
@@ -561,7 +618,10 @@ public class Ventas_productos extends javax.swing.JFrame {
     private javax.swing.JButton bbuscar;
     private javax.swing.JButton bimprimir;
     private javax.swing.JButton bmodificacion;
+    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel10;
+    private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -569,6 +629,7 @@ public class Ventas_productos extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
     private javax.swing.JButton regresar;
@@ -579,5 +640,6 @@ public class Ventas_productos extends javax.swing.JFrame {
     private javax.swing.JTextField tfidventa;
     private javax.swing.JTextField tfnombrepro;
     private javax.swing.JTextField tfprecio;
+    private javax.swing.JTextField tftotal;
     // End of variables declaration//GEN-END:variables
 }
