@@ -28,6 +28,7 @@ import com.itextpdf.layout.element.Table;
 import com.itextpdf.layout.property.HorizontalAlignment;
 import com.itextpdf.layout.property.TextAlignment;
 import java.io.File;
+import java.awt.desktop.*;
 import java.io.IOException;
 
 import static java.nio.file.Files.lines;
@@ -90,7 +91,7 @@ public class Ventas_productos extends javax.swing.JFrame {
         bmodificacion.setText(x);
         tfidventa.setText("");
         tfidprod.setText("0");
-        tffecha.setText("DD/MM/AAAA");
+        tffecha.setText("16/08/2023");
         tfnombrepro.setText("");
         tfcanpro.setText("0");
         tfprecio.setText("0");
@@ -523,7 +524,7 @@ public class Ventas_productos extends javax.swing.JFrame {
     }//GEN-LAST:event_tffacturaActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-      String filepad="C:/Users/Aaron/Documents/NetBeansProjects/Examen2/Proyecto final.pdf";
+      String filepad="C:/Users/Aaron/Documents/NetBeansProjects/Examen2/Venta num."+id_factura+".pdf";
         File pdfFile = Paths.get(filepad).toFile();
         if (Desktop.isDesktopSupported()) {
             Desktop desktop = Desktop.getDesktop();

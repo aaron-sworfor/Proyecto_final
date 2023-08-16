@@ -6,13 +6,14 @@ $pdo=new Conexion();
 
 if($_SERVER['REQUEST_METHOD']=='POST')
 {
-	$sql="INSERT INTO registro_producto (id, nombre, marca, descripcion, precio) VALUES (:id1, :nom, :mar, :des, :cos)";
+	$sql="INSERT INTO registro_producto (id, nombre,abrevia, marca, descripcion, precio) VALUES (:id1, :nom,:abre, :mar, :des, :cos)";
 	$stmt=$pdo->prepare($sql);	
 	$stmt->bindValue(':id1',$_POST['id']);
 	$stmt->bindValue(':nom',$_POST['nombre']);
+	$stmt->bindValue(':abre',$_POST['abrevia']);
 	$stmt->bindValue(':mar',$_POST['marca']);
 	$stmt->bindValue(':des',$_POST['descripcion']);
-	$stmt->bindValue(':cos',$_POST['precio']);	
+	$stmt->bindValue(':cos',$_POST['precio']);
 	$stmt->execute();
 	$idPost=$pdo->lastInsertId();
 	
